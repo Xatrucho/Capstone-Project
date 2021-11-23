@@ -55,6 +55,7 @@ def add_estimate():
 
     return estimate_schema.jsonify(estimate)
 
+# Endpoint to query all estimates
 @app.route("/estimates", methods=["GET"])
 def get_estimates():
     all_estimates = Estimate.query.all()
@@ -62,7 +63,7 @@ def get_estimates():
     return jsonify(result)
 
 
-# # Endpoint to query all estimates-different version
+# # Endpoint to query all estimates-(different version)
 # @app.route("/estimates", methods=["GET"])
 # def get_estimates():
 #     all_estimates = db.session.query(Estimate).all()
@@ -75,37 +76,37 @@ def get_estimate(id):
     estimate = Estimate.query.get(id)
     return estimate_schema.jsonify(estimate)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
-# # Endpoint for updating a guide
-# @app.route("/car/put/<id>", methods=["PUT"])
-# def car_update(id):
-#     car = Car.query.get(id) 
-#     year = request.json['year']
-#     make = request.json['make']
-#     model = request.json['model']
-#     condition = request.json['condition']
-
-#     car.year = year
-#     car.make = make
-#     car.model = model
-#     car.condition = condition
 
 
-#     db.session.commit()
-#     return jsonify(you got it.)
+# # Endpoint for updating a estimate
+@app.route("/estimate/<id>", methods=["PUT"])
+def estimate_update(id):
+    estimate = Estimate.query.get(id) 
+    year = request.json['year']
+    make = request.json['make']
+    model = request.json['model']
+    condition = request.json['condition']
+
+    estimate.year = year
+    estimate.make = make
+    estimate.model = model
+    estimate.condition = condition
+
+
+    db.session.commit()
+    return estimate_schema.jsonify(estimate)
 
 
 # #endpoint for deleting a record
-# @app.route("/car/delete/<id>", methods=["DELETE"])
-# def car_delete(id):
-#     car = Car.query.get(id)
-#     db.session.delete(car)
-#     db.session.commit()
+@app.route("/estimate/<id>", methods=["DELETE"])
+def estimate_delete(id):
+    estimate = Estimate.query.get(id)
+    db.session.delete(estimate)
+    db.session.commit()
     
-#     return "car was deleted"
+    # return estimate_schema.jsonify(estimate)
+    return "Estimate was deleted"
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
