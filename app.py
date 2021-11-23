@@ -40,6 +40,7 @@ estimates_schema = EstimateSchema(many=True)
 # Endpoint to create a new estimate
 @app.route('/estimate', methods=["POST"])
 def add_estimate():
+    post_data = request.get_json()
     year = request.json['year']
     make = request.json['make']
     model = request.json['model']
@@ -58,9 +59,8 @@ def add_estimate():
 # # Endpoint to query all estimates
 @app.route("/estimates", methods=["GET"])
 def get_estimates():
-    all_estimates = Estimate.query.all()
-    result = estimates_schema.dump(all_estimates)
-    return jsonify(result.data)
+    all_estimates = db.session.query(Estimate).all()
+    return jsonify(estimates_schema.dump(all_estimates))
 
 if __name__ == '__main__':
     app.run(debug=True)
