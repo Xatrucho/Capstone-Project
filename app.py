@@ -5,74 +5,71 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello():
-    return "hey flask"
+# @app.route('/')
+# def hello():
+#     return "hey flask"
 
-# basedir = os.path.abspath(os.path.dirname(__file__))
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
-# db = SQLAlchemy(app)
-# ma = Marshmallow(app)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
-# class Car(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     year = db.Column(db.String(4), unique=False)
-#     make = db.Column(db.String(50), unique=False)
-#     model = db.Column(db.String(50), unique=False)
-#     condition = db.Column(db.String(50), unique=False)
+class Estimate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.String(4), unique=False)
+    make = db.Column(db.String(50), unique=False)
+    model = db.Column(db.String(50), unique=False)
+    condition = db.Column(db.String(50), unique=False)
 
-#     def __init__(self, year, make, model, condition):
-#         self.year = year
-#         self.make = make
-#         self.model = model
-#         self.condition = condition
-
-
-        
-
-# class CarSchema(ma.Schema):
-#     class Meta:
-#         fields = ('id', 'year', 'make', 'model', 'condition')
+    def __init__(self, year, make, model, condition):
+        self.year = year
+        self.make = make
+        self.model = model
+        self.condition = condition
 
 
-# car_schema = CarSchema()
-# multiple_car_schema = CarSchema(many=True)
-# # guides_schema = GuideSchema(many=True)
-
-# # Endpoint to create a new guide
-# @app.route('/car/add', methods=["POST"])
-# def add_car():
-#     if request.content_type != 'application/json':
-#         return jsonify("Error: data must be json.")
-
-#     post_data = request.get_json()
-#     year = post_data.get("year")
-#     make = post_data.get("make")
-#     model = post_data.get("model")
-#     condition = post_data.get("condition")
-
-#     new_car = Car(year, make, model, condition)
-
-#     db.session.add(new_car)
-#     db.session.commit()
-
-#     car = car.query.get(new_car.id)
-
-#     return car_schema.jsonify(car)
+class EstimateSchema(ma.Schema):
+    class Meta:
+        fields = ('year', 'make', 'model', 'condition')
 
 
-# # Endpoint to query all guides
-# @app.route("/cars/get", methods=["GET"])
-# def get_cars():
-#     all_cars = Car.query.all()
-#     result = cars_schema.dump(all_cars)
-#     return jsonify(result)
+estimate_schema = EstimateSchema()
+estimates_schema = EstimateSchema(many=True)
+# guides_schema = GuideSchema(many=True)
 
-# #endpoint fro querying a single guide
+# Endpoint to create a new estimate
+@app.route('/estimate', methods=["POST"])
+def add_estimate():
+    year = request.json['year']
+    make = request.json['make']
+    model = request.json['model']
+    condition = request.json['condition']
+
+    new_estimate = Estimate(year, make, model, condition)
+
+    db.session.add(new_estimate)
+    db.session.commit()
+
+    estimate = Estimate.query.get(new_estimate.id)
+
+    return estimate_schema.jsonify(estimate)
+
+
+# # Endpoint to query all estimates
+@app.route("/estimates", methods=["GET"])
+def get_estimates():
+    all_estimates = Estimate.query.all()
+    result = estimates_schema.dump(all_estimates)
+    return jsonify(result.data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+#endpoint fro querying a single guide
 # @app.route("/car/get/<id>", methods=["GET"])
-# def get_car(id):
-#     car = Car.query.get(id)
-#     return car_schema.jsonify(car)
+# def get_car_by_id(id):
+#     car = db.session.query(Car).filter(Car.year == year).first()
+#     return jsonify(car_schema.(car))
 
 # # Endpoint for updating a guide
 # @app.route("/car/put/<id>", methods=["PUT"])
@@ -90,7 +87,7 @@ def hello():
 
 
 #     db.session.commit()
-#     return car_schema.jsonify(car)
+#     return jsonify(you got it.)
 
 
 # #endpoint for deleting a record
@@ -103,5 +100,5 @@ def hello():
 #     return "car was deleted"
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
