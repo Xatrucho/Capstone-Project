@@ -55,21 +55,28 @@ def add_estimate():
 
     return estimate_schema.jsonify(estimate)
 
-
-# # Endpoint to query all estimates
 @app.route("/estimates", methods=["GET"])
 def get_estimates():
-    all_estimates = db.session.query(Estimate).all()
-    return jsonify(estimates_schema.dump(all_estimates))
+    all_estimates = Estimate.query.all()
+    result = estimates_schema.dump(all_estimates)
+    return jsonify(result)
+
+
+# # Endpoint to query all estimates-different version
+# @app.route("/estimates", methods=["GET"])
+# def get_estimates():
+#     all_estimates = db.session.query(Estimate).all()
+#     return jsonify(estimates_schema.dump(all_estimates))
+
+
+#endpoint fro querying a single guide
+@app.route("/estimate/<id>", methods=["GET"])
+def get_estimate(id):
+    estimate = Estimate.query.get(id)
+    return estimate_schema.jsonify(estimate)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-#endpoint fro querying a single guide
-# @app.route("/car/get/<id>", methods=["GET"])
-# def get_car_by_id(id):
-#     car = db.session.query(Car).filter(Car.year == year).first()
-#     return jsonify(car_schema.(car))
 
 # # Endpoint for updating a guide
 # @app.route("/car/put/<id>", methods=["PUT"])
