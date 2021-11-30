@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask import Flask
 from flask_cors import CORS
 import os
 
@@ -14,6 +15,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+CORS(app)
 
 class Estimate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +41,7 @@ estimates_schema = EstimateSchema(many=True)
 # guides_schema = GuideSchema(many=True)
 
 # Endpoint to create a new estimate
-@app.route('/estimate', methods=["POST"])
+@app.route('/add-estimate', methods=["POST"])
 def add_estimate():
     post_data = request.get_json()
     year = request.json['year']
