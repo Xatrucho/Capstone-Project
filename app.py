@@ -4,6 +4,7 @@ from flask_marshmallow import Marshmallow
 from flask import Flask
 from flask_cors import CORS
 import os
+import psycopg2
 
 app = Flask(__name__)
 
@@ -12,7 +13,7 @@ app = Flask(__name__)
 #     return "hey flask"
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hidkhtrplmjmwc:14aaf9aefb8e570f78d27678267306461ddf1a650456f8b1461ebec959aee53f@ec2-44-195-102-97.compute-1.amazonaws.com:5432/d8o4v7i1bk32rh'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 CORS(app)
